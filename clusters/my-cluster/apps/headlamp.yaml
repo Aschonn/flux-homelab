@@ -1,10 +1,10 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: homepage
+  name: headlamp
   namespace: flux-system
 spec:
-  path: ./apps/homepage
+  path: ./apps/headlamp
   interval: 10m
   prune: true
   wait: true

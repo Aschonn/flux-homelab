@@ -66,10 +66,25 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 ---
 
-### 4️⃣ Configure kubectl Access
+### 4️⃣ Install and Configure Flux 
+
+#### You'll need to grab an access token from github with these permissions:
+
+https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
+
+```bash
+
+curl -s https://fluxcd.io/install.sh | sudo bash
+flux bootstrap github \
+  --token-auth \
+  --owner=aschonn \
+  --repository=flux-homelab \
+  --branch=main \
+  --path=clusters/my-cluster \
+  --personal
 
 
-
+```
 ---
 
 ### 5️⃣ Helpful Tools

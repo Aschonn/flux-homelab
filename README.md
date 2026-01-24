@@ -42,8 +42,12 @@ mkdir -p $HOME/.kube
 sudo cp -i /etc/rancher/k3s/k3s.yaml $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 chmod 600 $HOME/.kube/config
-
 ```
+```bash
+# test for connectivity
+kubectl get po -A
+```
+
 
 ---
 

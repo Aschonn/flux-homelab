@@ -8,3 +8,4 @@ resources:
   - nginx.yaml
   - cilium.yaml
   - longhorn.yaml
+  - kube-prometheus.yaml

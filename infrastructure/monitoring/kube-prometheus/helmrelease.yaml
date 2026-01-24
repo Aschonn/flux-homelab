@@ -1,0 +1,161 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: prometheus
+  namespace: kube-prometheus-stack
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: "79.1.1"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+  install:
+    createNamespace: true
+  values:
+    global:
+      rbac:
+        create: true
+
+    prometheusOperator:
+      enabled: true
+      resources:
+        limits:
+          cpu: 250m
+          memory: 256Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      admissionWebhooks:
+        enabled: false
+      tls:
+        enabled: false
+
+    grafana:
+      enabled: true
+      adminPassword: "admin"
+      defaultDashboardsEnabled: false
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      deploymentStrategy:
+        type: Recreate
+      persistence:
+        enabled: true
+        storageClassName: longhorn
+        accessModes:
+          - ReadWriteOnce
+        size: 1Gi
+      service:
+        type: ClusterIP
+      resources:
+        limits:
+          cpu: 250m
+          memory: 256Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      sidecar:
+        dashboards:
+          enabled: true
+          label: grafana_dashboard
+          labelValue: "1"
+          searchNamespace: ALL
+          provider:
+            allowUiUpdates: true
+            disableDelete: false
+            foldersFromFilesStructure: false
+      additionalDataSources:
+        - name: Prometheus
+          type: prometheus
+          url: http://prometheus-operated.kube-prometheus-stack.svc:9090
+      dashboards:
+        default:
+          prometheus-stats:
+            gnetId: 2
+            revision: 2
+            datasource: Prometheus
+          node-exporter:
+            gnetId: 1860
+            revision: 22
+            datasource: Prometheus
+
+    prometheus:
+      enabled: true
+      service:
+        type: ClusterIP
+      prometheusSpec:
+        nodeSelector:
+          kubernetes.io/arch: amd64
+        retention: 7d
+        scrapeInterval: 30s
+        scrapeTimeout: 10s
+        evaluationInterval: 30s
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+          requests:
+            cpu: 200m
+            memory: 512Mi
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              accessModes: [ "ReadWriteOnce" ]
+              resources:
+                requests:
+                  storage: 10Gi
+
+    alertmanager:
+      enabled: true
+      alertmanagerSpec:
+        nodeSelector:
+          kubernetes.io/arch: amd64
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              accessModes: [ "ReadWriteOnce" ]
+              resources:
+                requests:
+                  storage: 512Mi
+
+    nodeExporter:
+      enabled: true
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      extraArgs:
+        - --no-collector.nfsd
+        - --web.timeout=30s
+        - --log.level=warn
+      resources:
+        limits:
+          cpu: 50m
+          memory: 64Mi
+        requests:
+          cpu: 20m
+          memory: 32Mi
+
+    kubeStateMetrics:
+      enabled: true
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi

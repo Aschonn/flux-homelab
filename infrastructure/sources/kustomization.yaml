@@ -6,3 +6,4 @@ resources:
   - headlamp.yaml
   - metrics-server.yaml
   - nginx.yaml
+  - cilium.yaml

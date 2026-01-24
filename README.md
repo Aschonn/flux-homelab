@@ -54,7 +54,7 @@ kubectl get po -A
 ### 2️⃣ Download Git Repo
 
 ```bash
-git clone https://github.com/Aschonn/flux-homelab.git
+git clone https://github.com/Aschonn/flux-homelab.git && cd flux-homelab
 ```
 ---
 

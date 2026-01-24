@@ -27,6 +27,11 @@ Ps. I used local DNS in order for this to work. I used Technitium DNS which is a
 Before installing K3s, set your node IP and cluster token:
 
 ```bash
+sudo apt update && sudo apt install -y \
+  zfsutils-linux \
+  nfs-kernel-server \
+  cifs-utils \
+  open-iscsi  # Optional but recommended
 export SETUP_NODEIP=$(ip route get 1.1.1.1 | awk '{print $7; exit}')
 export SETUP_CLUSTERTOKEN=superduperrandomsecret  # Strong token
 curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="v1.33.3+k3s1" \
@@ -98,32 +103,6 @@ source ~/.config/envman/PATH.env
 
 ---
 
-### 6️⃣ Essential Packages
-
-Install ZFS, NFS, iSCSI, and CIFS support:
-
-```bash
-sudo apt update && sudo apt install -y \
-  zfsutils-linux \
-  nfs-kernel-server \
-  cifs-utils \
-  open-iscsi  # Optional but recommended
-```
-
----
-
-### 7️⃣ ArgoCD CLI
-
-Install ArgoCD CLI:
-
-```bash
-curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
-rm argocd-linux-amd64
-```
-
----
-
 ## 🐞 Debug / Local Access
 
 If you want to **debug the application without creating an ingress**, you can forward the ArgoCD server port to your node:
@@ -140,4 +119,3 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443 --address 0.0.0.0
 
 - Ensure `SETUP_NODEIP` matches your node IP.  
 - Use a strong `SETUP_CLUSTERTOKEN`.  
-- Optional packages are recomm

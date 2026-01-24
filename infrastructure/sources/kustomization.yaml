@@ -7,3 +7,4 @@ resources:
   - metrics-server.yaml
   - nginx.yaml
   - cilium.yaml
+  - longhorn.yaml

@@ -71,6 +71,9 @@ data:
             icon: coredns
             href: http://192.168.0.35:5380
             description: DNS Server
+        - IT-tools
+            href: https://tools.drogon.tech/
+            description: Self Hosted IT tools
 
     - DevOps:
         - FluxCD GitOps Starter Pack:

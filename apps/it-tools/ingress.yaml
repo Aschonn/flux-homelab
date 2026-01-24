@@ -12,10 +12,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - it-tools.drogon.tech
-    secretName: it-tools-tls
+    - tools.drogon.tech
+    secretName: tools-tls
   rules:
-  - host: it-tools.drogon.tech
+  - host: tools.drogon.tech
     http:
       paths:
       - path: /
@@ -24,4 +24,4 @@ spec:
           service:
             name: it-tools
             port:
-              number: 80
+              number: 8080

@@ -6,6 +6,8 @@ metadata:
 spec:
   path: ./infrastructure/networking/cilium/helm
   interval: 10m
+  prune: true
+  wait: true
   dependsOn:
     - name: sources
 

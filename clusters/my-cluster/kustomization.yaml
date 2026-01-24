@@ -3,5 +3,8 @@ kind: Kustomization
 
 resources:
   - flux-system
+  - 1-sources.yaml
+  - 2-ciliumhelm.yaml
+  - 3-infrastructure.yaml
+  - 4-ciliumconfig.yaml
   - apps
-  - infrastructure.yaml

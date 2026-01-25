@@ -4,10 +4,11 @@ metadata:
   name: ciliumhelm
   namespace: flux-system
 spec:
-  path: ./infrastructure/networking/cilium/helm
   interval: 10m
+  path: ./infrastructure/networking/cilium/helm
   prune: true
   wait: true
+  timeout: 10m
   dependsOn:
     - name: sources
 

@@ -1,4 +1,5 @@
-<img width="1907" height="835" alt="image" src="https://github.com/user-attachments/assets/83bb9d35-0f03-40ee-a888-879d9d09ab82" />
+<img width="1913" height="994" alt="image" src="https://github.com/user-attachments/assets/830f84f4-317d-4cf7-8ca2-7d42f5554801" />
+
 
 
 # flux-homelab

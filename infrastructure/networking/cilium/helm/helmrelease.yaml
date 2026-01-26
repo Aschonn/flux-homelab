@@ -4,93 +4,125 @@ metadata:
   name: cilium
   namespace: kube-system
 spec:
+  releaseName: cilium
   interval: 5m
-  install:
-    crds: Create
-  upgrade:
-    crds: CreateReplace
+
   chart:
     spec:
       chart: cilium
-      version: 1.18.0
       sourceRef:
         kind: HelmRepository
         name: cilium
         namespace: flux-system
+      version: "1.18.6"
+
+  # 🔑 REQUIRED so CRDs are installed/updated by Helm
+  install:
+    crds: CreateReplace
+
+  upgrade:
+    crds: CreateReplace
+
   values:
+    # -------------------------------------------------
+    # Cluster Name
+    # -------------------------------------------------
+
     cluster:
-      name: flux-homelab
+      name: flux-cluster
       id: 1
+
+    # -------------------------------------------------
+    # Core
+    # -------------------------------------------------
     kubeProxyReplacement: true
+
     k8sServiceHost: 192.168.0.82
     k8sServicePort: 6443
-    securityContext:
-      capabilities:
-        ciliumAgent: [CHOWN, KILL, NET_ADMIN, NET_RAW, IPC_LOCK, SYS_ADMIN, SYS_RESOURCE, DAC_OVERRIDE, FOWNER, SETGID, SETUID]
-        cleanCiliumState: [NET_ADMIN, SYS_ADMIN, SYS_RESOURCE]
-    cgroup:
-      autoMount:
-        enabled: false
-      hostRoot: /sys/fs/cgroup
+
+    # -------------------------------------------------
+    # Networking
+    # -------------------------------------------------
+    routingMode: native
+    autoDirectNodeRoutes: true
+
+    ipv4NativeRoutingCIDR: 10.42.0.0/16
+
+    ipv4:
+      enabled: true
+    ipv6:
+      enabled: false
+
+    enableIPv4Masquerade: true
+    enableBPFMasquerade: true
+
+    # -------------------------------------------------
+    # IPAM
+    # -------------------------------------------------
     ipam:
       mode: kubernetes
-    operator:
-      rollOutPods: true
-      replicas: 1
-      resources:
-        limits:
-          cpu: 500m
-          memory: 256Mi
-        requests:
-          cpu: 50m
-          memory: 128Mi
+
+    # -------------------------------------------------
+    # CRITICAL: automatic rollouts
+    # -------------------------------------------------
     rollOutCiliumPods: true
-    resources:
-      limits:
-        cpu: 1000m
-        memory: 1Gi
-      requests:
-        cpu: 200m
-        memory: 512Mi
-    debug:
+
+    operator:
+      replicas: 1
+      rollOutPods: true
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          memory: 256Mi
+
+    # -------------------------------------------------
+    # DNS / Gateway API
+    # -------------------------------------------------
+    dnsProxy:
       enabled: true
-    k8sClientRateLimit:
-      qps: 100
-      burst: 200
-    l2announcements:
-      enabled: true
-    externalIPs:
-      enabled: true
-    loadBalancer:
-      algorithm: maglev
+
     gatewayAPI:
       enabled: true
-      enableAlpn: false
+
     envoy:
-      securityContext:
-        capabilities:
-          keepCapNetBindService: true
-          envoy: [NET_ADMIN, PERFMON, BPF]
+      enabled: true
+
+    # -------------------------------------------------
+    # L2 / LoadBalancer
+    # -------------------------------------------------
+    l2announcements:
+      enabled: true
+
+    externalIPs:
+      enabled: true
+
+    loadBalancer:
+      algorithm: maglev
+
+    nodePort:
+      enabled: true
+
+    # -------------------------------------------------
+    # Hubble
+    # -------------------------------------------------
     hubble:
       enabled: true
       relay:
         enabled: true
-        rollOutPods: true
       ui:
         enabled: true
-        rollOutPods: true
-    ingressController:
+
+    # -------------------------------------------------
+    # Resources
+    # -------------------------------------------------
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+
+    debug:
       enabled: false
-      default: true
-      service:
-        annotations:
-          io.cilium/lb-ipam-ips: 192.168.0.224
-    authentication:
-      enabled: false
-      mutual:
-        spire:
-          enabled: false
-          install:
-            server:
-              dataStorage:
-                storageClass: cilium-spire-sc

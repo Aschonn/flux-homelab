@@ -33,7 +33,7 @@ sudo apt update && sudo apt install -y \
   zfsutils-linux \
   nfs-kernel-server \
   cifs-utils \
-  open-iscsi  # Optional but recommended
+  open-iscsi  # Optional
 export SETUP_NODEIP=$(ip route get 1.1.1.1 | awk '{print $7; exit}')
 export SETUP_CLUSTERTOKEN=superduperrandomsecret  # Strong token
 curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="v1.33.3+k3s1" \

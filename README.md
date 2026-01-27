@@ -73,7 +73,7 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 git clone <your repo> && cd <repo name>
 git clone https://github.com/Aschonn/flux-homelab.git
 rm -rf flux-homelab/.git
-cp -r flux-homelab/ .
+cp -r flux-homelab/* .
 rm -rf flux-homelab
 ```
 ---

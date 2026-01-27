@@ -8,3 +8,4 @@ resources:
   - 2-ciliumhelm.yaml
   - 3-infrastructure.yaml
   - 4-ciliumconfig.yaml
+  - 5-clusterissuer.yaml

@@ -21,73 +21,54 @@ data:
     background:
       image: https://images.unsplash.com/photo-1502790671504-542ad42d5189?auto=format&fit=crop&w=2560&q=80
 
-
   bookmarks.yaml: |
-
+    - Developer:
+        - My-Github:
+            - abbr: GH
+              href: https://github.com/aschonn
+        - Github-Flux-Source-Code:
+            - abbr: GH
+              href: https://github.com/aschonn/flux-homelab
 
 
   services.yaml: |
 
-    - Top Services:
-        - Proxmox:
-            icon: proxmox.png # icons found here https://github.com/walkxcode/dashboard-icons
-            href: https://192.168.0.15:8006
-            description: Proxmox VE
-        - Grafana:
-            icon: grafana
-            href: https://grafana.drogon.tech
-            description: Metrics, dashboards, alerts
-        - Prometheus:
-            icon: prometheus
-            href: https://prometheus.drogon.tech
-            description: Monitoring backend
-        - Headlamp:
-            icon: kubernetes
-            href: https://headlamp.drogon.tech
-            description: Cluster UI & RBAC management
+    - Apps:
+        - IT-Tools:
+            icon: it-tools-light
+            href: https://tools.drogon.tech
+            description: It Tool Box
 
     - Infrastructure:
-        - Proxmox:
-            icon: proxmox.png # icons found here https://github.com/walkxcode/dashboard-icons
-            href: https://192.168.0.100:8006
-            description: Proxmox VE
-        - Grafana:
-            icon: grafana
-            href: https://grafana.drogon.tech
-            description: Metrics, dashboards, alerts
-        - Prometheus:
-            icon: prometheus
-            href: https://prometheus.drogon.tech
-            description: Monitoring backend
         - Headlamp:
             icon: kubernetes
             href: https://headlamp.drogon.tech
             description: Cluster UI & RBAC management
+        - Cilium:
+            icon: cilium
+            href: https://hubble.drogon.tech
+            description: Network UI 
+
+    - Storage:
         - Longhorn:
             icon: longhorn
             href: https://longhorn.drogon.tech
             description: Distributed storage
-        - Technitium:
-            icon: coredns
-            href: http://192.168.0.35:5380
-            description: DNS Server
-        - IT-tools
-            href: https://tools.drogon.tech/
-            description: Self Hosted IT tools
 
-    - DevOps:
-        - FluxCD GitOps Starter Pack:
-            icon: github
-            href: https://github.com/aschonn/flux-homelab
-            description: GitOps cluster management
-        - ArgoCD GitOps Starter Pack: 
-            icon: github
-            href: https://github.com/aschonn/flux-homelab
-            description: GitOps cluster management
-        - My GitHub Profile:
-            icon: github
-            href: https://github.com/aschonn
-            description: Source control & automation
+    - Monitoring:
+        - Grafana:
+            icon: grafana
+            href: https://grafana.drogon.tech
+            description: Metrics, dashboards, alerts
+        - Prometheus:
+            icon: prometheus
+            href: https://prometheus.drogon.tech
+            description: Monitoring backend
+        - Alertmanager:
+            icon: alertmanager
+            href: https://alertmanager.drogon.tech
+            description: Alerting
+
 
   widgets.yaml: |
     - kubernetes:
@@ -96,28 +77,19 @@ data:
           cpu: true
           memory: true
           showLabel: true
-          label: "Cluster"
+          label: "flux-cluster"
         nodes:
           show: true
           cpu: true
           memory: true
           showLabel: true
-
     - resources:
         backend: resources
         expanded: true
         cpu: true
         memory: true
         network: default
-
     - search:
         provider: duckduckgo
         target: _blank
-
-    - datetime:
-        text_size: xl
-        format:
-          timeStyle: short
-          dateStyle: medium
-
   docker.yaml: ""

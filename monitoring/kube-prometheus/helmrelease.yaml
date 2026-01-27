@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: prometheus
-  namespace: kube-prometheus-stack
+  namespace: monitoring
 spec:
   interval: 5m
   install:
@@ -18,6 +18,7 @@ spec:
         name: prometheus-community
         namespace: flux-system
   values:
+    namespaceOverride: "monitoring"
     global:
       rbac:
         create: true
@@ -93,10 +94,12 @@ spec:
       prometheusSpec:
         nodeSelector:
           kubernetes.io/arch: amd64
-        retention: 7d
+        retention: 24h
+        retentionSize: 5GB
         scrapeInterval: 30s
         scrapeTimeout: 10s
         evaluationInterval: 30s
+        walCompression: true
         resources:
           limits:
             cpu: 500m
@@ -104,6 +107,14 @@ spec:
           requests:
             cpu: 200m
             memory: 512Mi
+        startupProbe:
+          initialDelaySeconds: 180
+          periodSeconds: 15
+          failureThreshold: 20
+        readinessProbe:
+          initialDelaySeconds: 90
+        livenessProbe:
+          initialDelaySeconds: 120
         storageSpec:
           volumeClaimTemplate:
             spec:

@@ -58,18 +58,8 @@ kubectl get po -A
 
 ---
 
-### 2) Download Git Repo
 
-```bash
-git clone <your repo> && cd <repo name>
-git clone https://github.com/Aschonn/flux-homelab.git
-rm -rf flux-homelab/.git
-cp -r flux-homelab/ ../
-rm -rf flux-homelab
-```
----
-
-### 3) Install Helm
+### 2) Install Helm
 
 ```bash
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
@@ -77,7 +67,7 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 ---
 
-### 4) Install Cilium
+### 3) Install Cilium
 
 ```bash
 helm repo add cilium https://helm.cilium.io && helm repo update
@@ -89,7 +79,7 @@ helm install cilium cilium/cilium -n kube-system \
 
 ---
 
-### 5)  Install and Configure Flux 
+### 4)  Install and Configure Flux 
 
 #### You'll need to grab an access token from github with these permissions:
 
@@ -110,7 +100,19 @@ flux bootstrap github \
 ```
 ---
 
-### 5️⃣ Helpful Tools
+
+### 5) Download Git Repo
+
+```bash
+git clone <your repo> && cd <repo name>
+git clone https://github.com/Aschonn/flux-homelab.git
+rm -rf flux-homelab/.git
+cp -r flux-homelab/ ../
+rm -rf flux-homelab
+```
+---
+
+### Helpful Tools
 
 #### k9s (Kubernetes CLI UI)
 

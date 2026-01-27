@@ -67,18 +67,7 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 ---
 
-### 3) Install Cilium
-
-```bash
-helm repo add cilium https://helm.cilium.io && helm repo update
-helm install cilium cilium/cilium -n kube-system \
-  -f infrastructure/networking/cilium/values.yaml \
-  --version 1.18.0 \
-  --set operator.replicas=1
-```
----
-
-### 4) Download Git Repo
+### 3) Download Git Repo
 
 ```bash
 git clone <your repo> && cd <repo name>
@@ -90,6 +79,19 @@ rm -rf flux-homelab
 ---
 
 ---
+
+### 4) Install Cilium
+
+```bash
+helm repo add cilium https://helm.cilium.io && helm repo update
+helm install cilium cilium/cilium -n kube-system \
+  -f infrastructure/networking/cilium/values.yaml \
+  --version 1.18.0 \
+  --set operator.replicas=1
+```
+---
+
+
 
 ### 5)  Install and Configure Flux 
 

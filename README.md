@@ -17,8 +17,9 @@ Ps. I used local DNS in order for this to work. I used Technitium DNS which is a
 
 ## Requirements:
 1) a server
-2) github repo (optional)
-
+2) github repo
+3) personal access token gh and cloudflare
+   
 ## ⚙️ Tutorial
 
 ### Remote into the server and install these dependencies
@@ -72,7 +73,19 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 ---
 
-### 4️⃣ Install and Configure Flux 
+### 3️⃣ Install Cilium
+
+```bash
+helm repo add cilium https://helm.cilium.io && helm repo update
+helm install cilium cilium/cilium -n kube-system \
+  -f infrastructure/networking/cilium/values.yaml \
+  --version 1.18.0 \
+  --set operator.replicas=1
+```
+
+---
+
+### 5️⃣  Install and Configure Flux 
 
 #### You'll need to grab an access token from github with these permissions:
 

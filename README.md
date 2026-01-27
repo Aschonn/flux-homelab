@@ -61,6 +61,7 @@ kubectl get po -A
 ### 2) Download Git Repo
 
 ```bash
+git clone <your repo> && cd <repo name>
 git clone https://github.com/Aschonn/flux-homelab.git
 rm -rf flux-homelab/.git
 cp -r flux-homelab/ ../

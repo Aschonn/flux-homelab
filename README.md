@@ -76,10 +76,22 @@ helm install cilium cilium/cilium -n kube-system \
   --version 1.18.0 \
   --set operator.replicas=1
 ```
+---
+
+### 4) Download Git Repo
+
+```bash
+git clone <your repo> && cd <repo name>
+git clone https://github.com/Aschonn/flux-homelab.git
+rm -rf flux-homelab/.git
+cp -r flux-homelab/ ../
+rm -rf flux-homelab
+```
+---
 
 ---
 
-### 4)  Install and Configure Flux 
+### 5)  Install and Configure Flux 
 
 #### You'll need to grab an access token from github with these permissions:
 
@@ -100,17 +112,6 @@ flux bootstrap github \
 ```
 ---
 
-
-### 5) Download Git Repo
-
-```bash
-git clone <your repo> && cd <repo name>
-git clone https://github.com/Aschonn/flux-homelab.git
-rm -rf flux-homelab/.git
-cp -r flux-homelab/ ../
-rm -rf flux-homelab
-```
----
 
 ### Helpful Tools
 

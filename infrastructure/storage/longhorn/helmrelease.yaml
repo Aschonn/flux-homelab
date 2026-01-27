@@ -32,8 +32,11 @@ spec:
       defaultDataLocality: "best-effort"
       defaultClassReplicaCount: 1
       mkfsExt4Parameters: "-F"
-      guaranteedInstanceManagerCPU: "5"
-      taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule"
+      guaranteedInstanceManagerCPU: "0.5"
+      taintTolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
     preUpgradeChecker:
       jobEnabled: false
     persistence:

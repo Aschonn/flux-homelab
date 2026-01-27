@@ -1,7 +1,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-issuer
+  name: certconfig
   namespace: flux-system
 spec:
   interval: 5m

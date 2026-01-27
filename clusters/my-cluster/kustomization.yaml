@@ -7,6 +7,6 @@ resources:
   - 2-ciliumhelm.yaml
   - 3-infrastructure.yaml
   - 4-ciliumconfig.yaml
-  - 5-clusterissuer.yaml
+  - 5-certconfig.yaml
   - 6-monitoring.yaml
   - 7-apps.yaml

@@ -24,7 +24,7 @@ Ps. I used local DNS in order for this to work. I used Technitium DNS which is a
 
 ### Remote into the server and install these dependencies
 
-### 1️⃣ Install K3S
+### 1) Install K3S
 
 Before installing K3s, set your node IP and cluster token:
 
@@ -58,7 +58,7 @@ kubectl get po -A
 
 ---
 
-### 2️⃣ Download Git Repo
+### 2) Download Git Repo
 
 ```bash
 git clone https://github.com/Aschonn/flux-homelab.git
@@ -68,7 +68,7 @@ rm -rf flux-homelab
 ```
 ---
 
-### 3️⃣ Install Helm
+### 3) Install Helm
 
 ```bash
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
@@ -76,7 +76,7 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 ---
 
-### 3️⃣ Install Cilium
+### 4) Install Cilium
 
 ```bash
 helm repo add cilium https://helm.cilium.io && helm repo update
@@ -88,7 +88,7 @@ helm install cilium cilium/cilium -n kube-system \
 
 ---
 
-### 5️⃣  Install and Configure Flux 
+### 5)  Install and Configure Flux 
 
 #### You'll need to grab an access token from github with these permissions:
 

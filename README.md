@@ -18,7 +18,7 @@ Ps. I used local DNS in order for this to work. I used Technitium DNS which is a
 ## Requirements:
 1) a server
 2) github repo
-3) personal access token gh and cloudflare
+3) personal access token gh and cloudflare api token
    
 ## ⚙️ Tutorial
 

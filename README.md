@@ -88,9 +88,15 @@ helm install cilium cilium/cilium -n kube-system \
 ```
 ---
 
+### 5) Create Github Repo
+
+```bash
+# add git commands
+```
+---
 
 
-### 5)  Install and Configure Flux 
+### 6)  Install and Configure Flux 
 
 #### You'll need to grab an access token from github with these permissions:
 
@@ -110,6 +116,23 @@ flux bootstrap github \
 
 ```
 ---
+
+### 7)  Push rest of the code to github
+
+
+```bash
+# Edit Kustomization
+# push rest of the code
+git add .
+git commit -m "initalizing rest of the code"
+git push
+
+
+
+
+```
+---
+
 
 
 ### Helpful Tools

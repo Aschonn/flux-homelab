@@ -20,5 +20,8 @@ spec:
         namespace: flux-system
       version: "v1.19.1"
   values:
-    installCRDs: true   # <-- this is inside "values", not in spec.install
-
+    crds:
+      # This option decides if the CRDs should be installed
+      # as part of the Helm installation.
+      enabled: true
+      keep: true

@@ -24,7 +24,25 @@ Ps. I used local DNS in order for this to work. I used Technitium DNS which is a
 
 ### Remote into the server and install these dependencies
 
-### 1) Install K3S
+### 1) Create a blank Github Repo
+
+```bash
+git clone https://github.com/Aschonn/flux-homelab && cd flux-homelab
+rm -rf .git
+git init
+git add .
+git status
+git commit -m "Initalizing homelab setup”
+git branch -M main
+git remote add origin <your repo>
+git push -u origin main
+git config --global user.email "email"
+git config --global user.name "name”
+```
+---
+
+
+### 2) Install K3S
 
 Before installing K3s, set your node IP and cluster token:
 
@@ -59,21 +77,11 @@ kubectl get po -A
 ---
 
 
-### 2) Install Helm
+### 3) Install Helm
 
 ```bash
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 ```
-
----
-
-### 3) Download Git Repo
-
-```bash
-git clone https://github.com/Aschonn/flux-homelab.git
-rm -rf flux-homelab/.git
-```
----
 
 ---
 
@@ -88,15 +96,8 @@ helm install cilium cilium/cilium -n kube-system \
 ```
 ---
 
-### 5) Create Github Repo
 
-```bash
-# add git commands
-```
----
-
-
-### 6)  Install and Configure Flux 
+### 5)  Install and Configure Flux 
 
 #### You'll need to grab an access token from github with these permissions:
 
@@ -108,7 +109,7 @@ curl -s https://fluxcd.io/install.sh | sudo bash
 flux bootstrap github \
   --token-auth \
   --owner=aschonn \
-  --repository=flux-homelab \
+  --repository=<name of repo> \
   --branch=main \
   --path=clusters/my-cluster \
   --personal
@@ -116,23 +117,6 @@ flux bootstrap github \
 
 ```
 ---
-
-### 7)  Push rest of the code to github
-
-
-```bash
-# Edit Kustomization
-# push rest of the code
-git add .
-git commit -m "initalizing rest of the code"
-git push
-
-
-
-
-```
----
-
 
 
 ### Helpful Tools
@@ -144,21 +128,3 @@ curl -sS https://webinstall.dev/k9s | bash
 source ~/.config/envman/PATH.env
 ```
 
----
-
-## 🐞 Debug / Local Access
-
-If you want to **debug the application without creating an ingress**, you can forward the ArgoCD server port to your node:
-
-```bash
-kubectl port-forward svc/argocd-server -n argocd 8080:443 --address 0.0.0.0
-```
-
-- Access via: `https://<node-ip>:8080` from your local network.
-
----
-
-## ✅ Notes
-
-- Ensure `SETUP_NODEIP` matches your node IP.  
-- Use a strong `SETUP_CLUSTERTOKEN`.  

@@ -27,17 +27,24 @@ Ps. I used local DNS in order for this to work. I used Technitium DNS which is a
 ### 1) Create a blank Github Repo
 
 ```bash
+export GIT_EMAIL="github_email"
+export GIT_NAME="github_name"
+export GITHUB_USERNAME="github_username"
+export GITHUB_PAT="personal_access_token"  
+export TARGET_REPO="your_repo_name"               
+
+git config --global user.email "$GIT_EMAIL"
+git config --global user.name "$GIT_NAME"
 git clone https://github.com/Aschonn/flux-homelab && cd flux-homelab
 rm -rf .git
 git init
 git add .
 git status
-git commit -m "Initalizing homelab setup”
+git commit -m "Initializing homelab setup"
 git branch -M main
-git remote add origin <your repo>
+git remote add origin https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/${GITHUB_USERNAME}/${TARGET_REPO}.git
 git push -u origin main
-git config --global user.email "email"
-git config --global user.name "name”
+
 ```
 ---
 

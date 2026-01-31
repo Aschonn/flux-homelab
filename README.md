@@ -102,9 +102,16 @@ helm install cilium cilium/cilium -n kube-system \
   --set operator.replicas=1
 ```
 ---
+### 5)  Create Secret for Cloudflare
 
+```bash
+kubectl create secret generic cloudflare-api-token \
+  --from-literal=api-token=<APITOKEN> \
+  --namespace cert-manager \
+  --dry-run=client -o yaml > infrastructure/networking/cert-manager/config/cloudflare-api-token.yaml
+```
 
-### 5)  Install and Configure Flux 
+### 6)  Install and Configure Flux 
 
 #### You'll need to grab an access token from github with these permissions:
 

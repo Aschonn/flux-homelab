@@ -10,9 +10,6 @@ Ps. I used local DNS in order for this to work. I used Technitium DNS which is a
 
 ### https://community-scripts.github.io/ProxmoxVE/scripts?id=technitiumdns
 
-
-**Specs:** Ubuntu 24.04
-
 ---
 
 ## Requirements:

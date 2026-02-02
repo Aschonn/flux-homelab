@@ -113,6 +113,9 @@ kubectl create secret generic cloudflare-api-token \
 # -----------------------------
 curl -s https://fluxcd.io/install.sh | sudo bash
 
+# Flux ONLY reads GITHUB_TOKEN
+export GITHUB_TOKEN="$GITHUB_PAT"
+
 flux bootstrap github \
   --token-auth \
   --owner="$GITHUB_USERNAME" \
@@ -120,5 +123,5 @@ flux bootstrap github \
   --branch=main \
   --path=clusters/my-cluster \
   --personal
-
+  
 echo "🚀 Cluster bootstrap complete"

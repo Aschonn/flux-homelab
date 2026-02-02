@@ -38,7 +38,7 @@ sudo apt update && sudo apt install -y \
   zfsutils-linux \
   nfs-kernel-server \
   cifs-utils \
-  open-iscsi
+  open-iscsi 
 
 export SETUP_NODEIP=$(ip route get 1.1.1.1 | awk '{print $7; exit}')
 read -s -p "Set your K3s cluster token (super secret): " SETUP_CLUSTERTOKEN
@@ -80,19 +80,20 @@ helm install cilium cilium/cilium -n kube-system \
   --set operator.replicas=1
 
 # -----------------------------
-# Create Secret for Cloudflare
+# Create and Install Secret for Cloudflare
 # -----------------------------
 echo "=== Step 5: Creating Cloudflare secret ==="
 read -s -p "Enter Cloudflare API Token: " CLOUDFLARE_TOKEN
 echo
 kubectl create secret generic cloudflare-api-token \
   --from-literal=api-token=$CLOUDFLARE_TOKEN \
-  --namespace cert-manager 
+  --namespace cert-manager \
+  --dry-run=client -o yaml > infrastructure/networking/cert-manager/config/cloudflare-api-token.yaml
 
 # -----------------------------
-# Install and Configure Flux
+# Install and configure flux
 # -----------------------------
-echo "=== Step 6: Installing & Bootstrapping Flux ==="
+echo "=== Installing & Bootstrapping Flux ==="
 
 curl -s https://fluxcd.io/install.sh | sudo bash
 

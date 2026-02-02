@@ -8,7 +8,9 @@ For this setup I used terraform from my homelab to setup up the node. I will be 
 
 Ps. I used local DNS in order for this to work. I used Technitium DNS which is an open source dhcp server that can be installed using if interested:
 
-### https://community-scripts.github.io/ProxmoxVE/scripts?id=technitiumdns
+Flux Concepts:
+
+https://fluxcd.io/flux/concepts/
 
 ---
 

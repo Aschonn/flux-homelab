@@ -1,26 +1,48 @@
 #!/bin/bash
-# setup-homelab.sh
-# Full homelab setup: GitHub repo, K3s, Helm, Cilium, Cloudflare secret, FluxCD
-
 set -euo pipefail
 IFS=$'\n\t'
 
 # -----------------------------
-# 1) Create a blank GitHub repo
+# Load .env
 # -----------------------------
-echo "=== Step 1: Creating GitHub repo ==="
+if [[ ! -f .env ]]; then
+  echo "❌ .env file not found"
+  exit 1
+fi
 
-read -p "GitHub Email: " GIT_EMAIL
-read -p "GitHub Name: " GIT_NAME
-read -p "GitHub Username: " GITHUB_USERNAME
-read -s -p "GitHub Personal Access Token: " GITHUB_PAT
-echo
-read -p "Target Repo Name: " TARGET_REPO
+export $(grep -v '^#' .env | xargs)
+
+# -----------------------------
+# Sanity checks
+# -----------------------------
+REQUIRED_VARS=(
+  GIT_EMAIL
+  GIT_NAME
+  GITHUB_USERNAME
+  GITHUB_PAT
+  TARGET_REPO
+  SETUP_CLUSTERTOKEN
+  CLOUDFLARE_API_TOKEN
+)
+
+for var in "${REQUIRED_VARS[@]}"; do
+  if [[ -z "${!var:-}" ]]; then
+    echo "❌ Missing required env var: $var"
+    exit 1
+  fi
+done
+
+# -----------------------------
+# 1) GitHub Repo Bootstrap
+# -----------------------------
+echo "=== GitHub Repo Setup ==="
 
 git config --global user.email "$GIT_EMAIL"
 git config --global user.name "$GIT_NAME"
 
-echo "Cloning template repo..."
+git clone https://github.com/Aschonn/flux-homelab
+cd flux-homelab
+
 rm -rf .git
 git init
 git add .
@@ -30,71 +52,62 @@ git remote add origin https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/${GITH
 git push -u origin main
 
 # -----------------------------
-#  Install K3s
+# 2) Install K3s
 # -----------------------------
-echo "=== Step 2: Installing K3s ==="
+echo "=== Installing K3s ==="
 
 sudo apt update && sudo apt install -y \
   zfsutils-linux \
   nfs-kernel-server \
   cifs-utils \
-  open-iscsi 
+  open-iscsi
 
-export SETUP_NODEIP=$(ip route get 1.1.1.1 | awk '{print $7; exit}')
-read -s -p "Set your K3s cluster token (super secret): " SETUP_CLUSTERTOKEN
-echo
+SETUP_NODEIP=$(ip route get 1.1.1.1 | awk '{print $7; exit}')
 
-curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="v1.33.3+k3s1" \
+curl -sfL https://get.k3s.io | \
+  INSTALL_K3S_VERSION="v1.33.3+k3s1" \
   INSTALL_K3S_EXEC="--node-ip $SETUP_NODEIP \
   --disable=flannel,local-storage,metrics-server,servicelb,traefik \
-  --flannel-backend='none' \
+  --flannel-backend=none \
   --disable-network-policy \
   --disable-cloud-controller \
   --disable-kube-proxy" \
-  K3S_TOKEN=$SETUP_CLUSTERTOKEN \
+  K3S_TOKEN="$SETUP_CLUSTERTOKEN" \
   K3S_KUBECONFIG_MODE=644 sh -s -
 
-mkdir -p $HOME/.kube
-sudo cp -i /etc/rancher/k3s/k3s.yaml $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
-chmod 600 $HOME/.kube/config
+mkdir -p ~/.kube
+sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+sudo chown $(id -u):$(id -g) ~/.kube/config
+chmod 600 ~/.kube/config
 
-echo "Testing K3s connectivity..."
-kubectl get po -A
+kubectl get nodes
 
 # -----------------------------
-# Install Helm
+# 3) Helm
 # -----------------------------
-echo "=== Step 3: Installing Helm ==="
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 # -----------------------------
-# Install Cilium
+# 4) Cilium
 # -----------------------------
-echo "=== Step 4: Installing Cilium ==="
 helm repo add cilium https://helm.cilium.io
 helm repo update
-helm install cilium cilium/cilium -n kube-system \
+helm install cilium cilium/cilium \
+  -n kube-system \
   -f infrastructure/networking/cilium/values.yaml \
   --version 1.18.0 \
   --set operator.replicas=1
 
 # -----------------------------
-# Create and Install Secret for Cloudflare
+# 5) Cloudflare Secret (GitOps)
 # -----------------------------
-echo "=== Step 5: Creating Cloudflare secret ==="
-read -s -p "Enter Cloudflare API Token: " CLOUDFLARE_TOKEN
-echo
 kubectl create secret generic cloudflare-api-token \
-  --from-literal=api-token=$CLOUDFLARE_TOKEN \
-  --namespace cert-manager \
-  --dry-run=client -o yaml > infrastructure/networking/cert-manager/config/cloudflare-api-token.yaml
+  --from-literal=api-token="$CLOUDFLARE_API_TOKEN" \
+  --namespace cert-manager
 
 # -----------------------------
-# Install and configure flux
+# 6) Flux Bootstrap
 # -----------------------------
-echo "=== Installing & Bootstrapping Flux ==="
-
 curl -s https://fluxcd.io/install.sh | sudo bash
 
 flux bootstrap github \
@@ -105,4 +118,4 @@ flux bootstrap github \
   --path=clusters/my-cluster \
   --personal
 
-echo "=== Setup Complete ==="
+echo "✅ Homelab bootstrap complete"

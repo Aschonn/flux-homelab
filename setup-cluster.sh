@@ -3,17 +3,19 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # -----------------------------
-# Load .env
+# Load .env safely
 # -----------------------------
 if [[ ! -f .env ]]; then
   echo "❌ .env file not found"
   exit 1
 fi
 
-export $(grep -v '^#' .env | xargs)
+set -a
+source .env
+set +a
 
 # -----------------------------
-# Sanity checks
+# Validate required vars
 # -----------------------------
 REQUIRED_VARS=(
   GIT_EMAIL
@@ -32,11 +34,11 @@ for var in "${REQUIRED_VARS[@]}"; do
   fi
 done
 
+echo "✅ Environment loaded for repo: ${GITHUB_USERNAME}/${TARGET_REPO}"
+
 # -----------------------------
 # 1) GitHub Repo Bootstrap
 # -----------------------------
-echo "=== GitHub Repo Setup ==="
-
 git config --global user.email "$GIT_EMAIL"
 git config --global user.name "$GIT_NAME"
 
@@ -48,25 +50,24 @@ git init
 git add .
 git commit -m "Initializing homelab setup"
 git branch -M main
-git remote add origin https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/${GITHUB_USERNAME}/${TARGET_REPO}.git
+git remote add origin \
+  https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/${GITHUB_USERNAME}/${TARGET_REPO}.git
 git push -u origin main
 
 # -----------------------------
 # 2) Install K3s
 # -----------------------------
-echo "=== Installing K3s ==="
-
 sudo apt update && sudo apt install -y \
   zfsutils-linux \
   nfs-kernel-server \
   cifs-utils \
   open-iscsi
 
-SETUP_NODEIP=$(ip route get 1.1.1.1 | awk '{print $7; exit}')
+NODE_IP=$(ip route get 1.1.1.1 | awk '{print $7; exit}')
 
 curl -sfL https://get.k3s.io | \
   INSTALL_K3S_VERSION="v1.33.3+k3s1" \
-  INSTALL_K3S_EXEC="--node-ip $SETUP_NODEIP \
+  INSTALL_K3S_EXEC="--node-ip $NODE_IP \
   --disable=flannel,local-storage,metrics-server,servicelb,traefik \
   --flannel-backend=none \
   --disable-network-policy \
@@ -77,21 +78,22 @@ curl -sfL https://get.k3s.io | \
 
 mkdir -p ~/.kube
 sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
-sudo chown $(id -u):$(id -g) ~/.kube/config
+sudo chown "$(id -u):$(id -g)" ~/.kube/config
 chmod 600 ~/.kube/config
 
 kubectl get nodes
 
 # -----------------------------
-# 3) Helm
+# 3) Install Helm
 # -----------------------------
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 # -----------------------------
-# 4) Cilium
+# 4) Install Cilium
 # -----------------------------
 helm repo add cilium https://helm.cilium.io
 helm repo update
+
 helm install cilium cilium/cilium \
   -n kube-system \
   -f infrastructure/networking/cilium/values.yaml \
@@ -106,7 +108,7 @@ kubectl create secret generic cloudflare-api-token \
   --namespace cert-manager
 
 # -----------------------------
-# 6) Flux Bootstrap
+# 6) Flux Bootstrap (non-redundant)
 # -----------------------------
 curl -s https://fluxcd.io/install.sh | sudo bash
 
@@ -118,4 +120,4 @@ flux bootstrap github \
   --path=clusters/my-cluster \
   --personal
 
-echo "✅ Homelab bootstrap complete"
+echo "🚀 Cluster bootstrap complete"

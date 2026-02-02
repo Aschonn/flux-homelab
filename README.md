@@ -25,8 +25,6 @@ https://fluxcd.io/flux/concepts/
 
 ### 1) Create a blank Github Repo
 
-🚀 Quick Start (Recommended)
-
 Clone this repo and run the bootstrap script:
 
 ```bash

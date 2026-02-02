@@ -21,7 +21,6 @@ git config --global user.email "$GIT_EMAIL"
 git config --global user.name "$GIT_NAME"
 
 echo "Cloning template repo..."
-cd flux-homelab
 rm -rf .git
 git init
 git add .

@@ -87,22 +87,21 @@ read -s -p "Enter Cloudflare API Token: " CLOUDFLARE_TOKEN
 echo
 kubectl create secret generic cloudflare-api-token \
   --from-literal=api-token=$CLOUDFLARE_TOKEN \
-  --namespace cert-manager \
-  --dry-run=client -o yaml > infrastructure/networking/cert-manager/config/cloudflare-api-token.yaml
+  --namespace cert-manager 
 
 # -----------------------------
 # Install and Configure Flux
 # -----------------------------
-echo "=== Step 6: Installing FluxCD ==="
+echo "=== Step 6: Installing & Bootstrapping Flux ==="
+
 curl -s https://fluxcd.io/install.sh | sudo bash
 
-read -p "Flux GitHub Repo Name (for bootstrap): " FLUX_REPO
 flux bootstrap github \
   --token-auth \
-  --owner=$GITHUB_USERNAME \
-  --repository=$FLUX_REPO \
+  --owner="$GITHUB_USERNAME" \
+  --repository="$TARGET_REPO" \
   --branch=main \
   --path=clusters/my-cluster \
   --personal
 
-echo "=== Homelab Setup Complete! ==="
+echo "=== Setup Complete ==="

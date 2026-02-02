@@ -30,10 +30,8 @@ git branch -M main
 git remote add origin https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/${GITHUB_USERNAME}/${TARGET_REPO}.git
 git push -u origin main
 
-cd ..
-
 # -----------------------------
-# 2) Install K3s
+#  Install K3s
 # -----------------------------
 echo "=== Step 2: Installing K3s ==="
 
@@ -66,13 +64,13 @@ echo "Testing K3s connectivity..."
 kubectl get po -A
 
 # -----------------------------
-# 3) Install Helm
+# Install Helm
 # -----------------------------
 echo "=== Step 3: Installing Helm ==="
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 # -----------------------------
-# 4) Install Cilium
+# Install Cilium
 # -----------------------------
 echo "=== Step 4: Installing Cilium ==="
 helm repo add cilium https://helm.cilium.io
@@ -83,7 +81,7 @@ helm install cilium cilium/cilium -n kube-system \
   --set operator.replicas=1
 
 # -----------------------------
-# 5) Create Secret for Cloudflare
+# Create Secret for Cloudflare
 # -----------------------------
 echo "=== Step 5: Creating Cloudflare secret ==="
 read -s -p "Enter Cloudflare API Token: " CLOUDFLARE_TOKEN
@@ -94,7 +92,7 @@ kubectl create secret generic cloudflare-api-token \
   --dry-run=client -o yaml > infrastructure/networking/cert-manager/config/cloudflare-api-token.yaml
 
 # -----------------------------
-# 6) Install and Configure Flux
+# Install and Configure Flux
 # -----------------------------
 echo "=== Step 6: Installing FluxCD ==="
 curl -s https://fluxcd.io/install.sh | sudo bash

@@ -103,6 +103,7 @@ helm install cilium cilium/cilium \
 # -----------------------------
 # 5) Cloudflare Secret (GitOps)
 # -----------------------------
+kubectl create ns cert-manager
 kubectl create secret generic cloudflare-api-token \
   --from-literal=api-token="$CLOUDFLARE_API_TOKEN" \
   --namespace cert-manager

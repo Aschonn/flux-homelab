@@ -27,9 +27,9 @@ https://fluxcd.io/flux/concepts/
 
 Clone this repo and run the bootstrap script:
 
-### Update .env file
+### 2) Update .env file
 
-### 2) Run commands
+### 3) Run commands
 ```bash
 chmod +x setup-homelab.sh
 ./setup-homelab.sh

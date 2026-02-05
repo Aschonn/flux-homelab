@@ -15,7 +15,7 @@ https://fluxcd.io/flux/concepts/
 ---
 
 ## Requirements:
-1) a server
+1) a server (host of cluster)
 2) github repo
 3) personal access token gh and cloudflare api token
    
@@ -27,6 +27,9 @@ https://fluxcd.io/flux/concepts/
 
 Clone this repo and run the bootstrap script:
 
+### Update .env file
+
+### 2) Run commands
 ```bash
 chmod +x setup-homelab.sh
 ./setup-homelab.sh

@@ -5,5 +5,7 @@ resources:
   - ns.yaml
   - helmrelease.yaml
   - ingress.yaml
+  - clusterolebinding.yaml
+  - svcaccount.yaml
 
 namespace: headlamp
